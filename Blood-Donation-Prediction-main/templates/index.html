@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blood Donor Prediction</title>
+    <style>
+      body {
+        background-color: pink;
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        color: #5A5A5A;
+      }
+
+      h1 {
+        font-size: 48px;
+        font-weight: bold;
+        color: #B80C09;
+        text-align: center;
+        margin-top: 100px;
+      } 
+
+      form {
+        text-align: center;
+        margin-top: 50px;
+      }
+
+      label {
+        display: block;
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      input[type="number"] {
+        font-size: 18px;
+        padding: 10px;
+        border: 2px solid #B80C09;
+        border-radius: 5px;
+      }
+
+      input[type="submit"] {
+        font-size: 24px;
+        padding: 10px 30px;
+        background-color: #B80C09;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin-top: 50px;
+        cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #5A5A5A;
+      }
+
+      .bottom-button {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .output {
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 50px;
+      }
+
+      .error {
+        font-size: 24px;
+        color: red;
+        margin-top: 50px;
+      }
+
+      .clear-button {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+    </style>
+    <script>
+      function validateForm() {
+        var lastDonation = parseInt(document.getElementById("months_since_last_donation").value);
+        var firstDonation = parseInt(document.getElementById("months_since_first_donation").value);
+        if (lastDonation > firstDonation) {
+          alert("Oops! Looks like you entered an invalid value. 'Months since last donation' should be less than or equal to 'Months since first donation'.");
+          return false;
+        }
+        return true;
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Blood Donor Prediction</h1>
+    <form action="/predict" method="post" onsubmit="return validateForm()">
+      <label for="months_since_last_donation">Months since last donation:</label>
+      <input type="number" name="months_since_last_donation" id="months_since_last_donation" required>
+      
+      <label for="months_since_first_donation">Months since first donation:</label>
+      <input type="number" name="months_since_first_donation" id="months_since_first_donation" required>
+
+      <label for="number_of_donations">Number of donations:</label>
+      <input type="number" name="number_of_donations" id="number_of_donations" required>
+
+      
+      
+      <div class="bottom-button">
+        <input type="submit" value="Predict">
+      </div>
+    </form> 
+
+    {% if prediction is not none %}
+      <div class="output">
+        <p style="font-size: 30px; font-weight: bold; text-align: center;">
+          {% if prediction >= 0.44 %}
+            The donor is <span style="color: green">likely</span> to donate blood 
+          {% else %}
+            The donor is <span style="color: red">unlikely</span> to donate blood 
+          {% endif %}
+        </p>
+      </div>
+    {% endif %}
+
+
+
+    {% if error is not none %}
+    <div class="output">{{ error }}</div>
+    {% endif %}
+
+    <div class="clear-button">
+      <button type="button" onclick="clearOutput()">Clear</button>
+    </div>
+    
+    <script>
+      function clearOutput() {
+      var output = document.querySelector(".output");
+      if (output !== null) {
+        output.innerHTML = "";
+      }
+    }
+    </script>
+    
+  
+    
+      </body>
+    </html>
